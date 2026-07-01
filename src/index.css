@@ -1,111 +1,203 @@
+@import url("https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap");
+@import "tailwindcss";
+
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
-
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
-
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
+  --background: #f6f8f5;
+  --foreground: #000000;
+  --font-jost: Jost, Arial, Helvetica, sans-serif;
+  --ast-global-color-0: #74a84a;
+  --ast-global-color-1: #2c541d;
+  --ast-global-color-2: #000000;
+  --ast-global-color-3: #585858;
+  --ast-global-color-4: #f6f8f5;
+  --ast-global-color-5: #ffffff;
+  --ast-global-color-6: rgba(82, 104, 64, 0.8);
+  --ast-global-color-7: rgba(82, 104, 64, 0.5);
+  --ast-global-color-8: rgba(82, 104, 64, 0.3);
+  --ast-border-color: #989898;
+  --ast-body-line-height: 1.7em;
+  color-scheme: light;
+  font-family: var(--font-jost);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-ast-green: var(--ast-global-color-0);
+  --color-ast-green-dark: var(--ast-global-color-1);
+  --color-ast-black: var(--ast-global-color-2);
+  --color-ast-gray: var(--ast-global-color-3);
+  --color-ast-cream: var(--ast-global-color-4);
+  --font-sans: var(--font-jost);
+  --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  --font-weight-semibold: 500;
+  --font-weight-bold: 600;
+  --font-weight-extrabold: 700;
+  --font-weight-black: 800;
+}
 
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
+html {
+  box-sizing: border-box;
+  font-size: 106.25%;
+  line-height: 1.15;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+*,
+::before,
+::after {
+  box-sizing: inherit;
 }
 
 body {
   margin: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-jost);
+  font-style: normal;
+}
+
+body,
+button,
+input,
+select,
+textarea {
+  font-family: var(--font-jost);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: var(--ast-body-line-height);
+}
+
+button,
+a,
+input {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+  outline: 3px solid var(--ast-global-color-0);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: #dceacb;
+  color: #000000;
 }
 
 #root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
   min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
 }
 
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
+.bayblaze-brand-wordmark {
+  font-family: var(--font-jost), Jost, Arial, sans-serif;
+  letter-spacing: 0;
+  line-height: 1;
 }
 
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
-}
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
-}
-p {
-  margin: 0;
+.bayblaze-sharp-card {
+  border: 2px solid #000000;
+  box-shadow: 6px 6px 0 #000000;
 }
 
-code,
-.counter {
-  font-family: var(--mono);
+.bayblaze-sharp-button {
+  align-items: center;
+  border: 2px solid #000000;
   display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
+  justify-content: center;
+  min-height: 44px;
+  padding: 0.72rem 1rem;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  line-height: 1;
 }
 
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+.bayblaze-sharp-button:hover:not(:disabled) {
+  transform: translate(-1px, -1px);
+}
+
+.bayblaze-sharp-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.bayblaze-sharp-button--primary {
+  background: var(--ast-global-color-0);
+  color: #000000;
+}
+
+.bayblaze-sharp-button--primary:hover:not(:disabled) {
+  background: #000000;
+  color: #ffffff;
+}
+
+.bayblaze-sharp-button--dark {
+  background: #000000;
+  color: #ffffff;
+}
+
+.bayblaze-sharp-button--dark:hover:not(:disabled) {
+  background: var(--ast-global-color-0);
+  color: #000000;
+}
+
+.bayblaze-sharp-button--outline {
+  background: #ffffff;
+  color: #000000;
+}
+
+.bayblaze-sharp-button--outline:hover:not(:disabled) {
+  background: #000000;
+  color: #ffffff;
+}
+
+.bayblaze-sharp-input {
+  background: #ffffff;
+  border: 2px solid #000000;
+  color: #000000;
+  display: block;
+  outline: none;
+  padding: 0 0.8rem;
+  width: 100%;
+}
+
+.bayblaze-sharp-input::placeholder {
+  color: #7a7a7a;
+}
+
+.bayblaze-sharp-badge {
+  align-items: center;
+  border: 2px solid #000000;
+  display: inline-flex;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  line-height: 1;
+  padding: 0.45rem 0.55rem;
+  text-transform: uppercase;
+}
+
+.bayblaze-sharp-badge--green {
+  background: var(--ast-global-color-0);
+  color: #000000;
+}
+
+@media (max-width: 544px) {
+  html {
+    font-size: 96.9%;
+  }
 }
