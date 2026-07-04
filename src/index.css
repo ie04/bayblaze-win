@@ -16,6 +16,8 @@
   --ast-global-color-8: rgba(82, 104, 64, 0.3);
   --ast-border-color: #989898;
   --ast-body-line-height: 1.7em;
+  --bb-green: #74a84a;
+  --bb-green-dark: #2c541d;
   color-scheme: light;
   font-family: var(--font-jost);
   font-synthesis: none;
