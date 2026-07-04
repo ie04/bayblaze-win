@@ -63,4 +63,12 @@ These routes should require a BayBlaze customer account session bearer token.
 - Add `https://win.bayblaze.net/auth/google/callback` to `bayblaze-api` OAuth redirect allowlist.
 - Add the same redirect URI in Google Cloud OAuth client settings.
 - Allow CORS from `https://win.bayblaze.net` for customer auth and win routes.
+- The Lovable preview origin `https://bayblaze-tap-win.lovable.app` is also
+  allowed in production `bayblaze-api` CORS and OAuth redirect config for
+  preview testing. Its Google callback URI is
+  `https://bayblaze-tap-win.lovable.app/auth/google/callback`.
+- Local Google sign-in testing against production API is allowed from
+  `localhost` and `127.0.0.1` on Vite ports `5173`, `5174`, and `5175`; the
+  matching `/auth/google/callback` URLs must also exist in Google Cloud OAuth
+  settings if testing the full Google redirect locally.
 - Configure SPA rewrites so `/auth/google/callback` serves `index.html`.
