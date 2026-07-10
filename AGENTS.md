@@ -19,6 +19,11 @@ The app should stay focused on the promotional reward UX:
 - Do not call Firebase, Firestore, Medusa, Twilio, or Google APIs directly from browser code.
 - Customer auth must go through `bayblaze-api` account routes.
 - Promo-code state, referral attribution, completed-order qualification, and freebie eligibility must be owned by `bayblaze-api`.
+- Generated friend codes are shared discount-code records in
+  `customer_discount_codes/{CODE}` with `category=win_referral`, created through
+  the common `bayblaze-api` discount-code service. They appear in
+  `bayblaze-admin` alongside admin promos for centralized visibility, but remain
+  managed by the win reward flow.
 - Product/freebie data should come from API routes backed by the Medusa inventory source of truth.
 
 ## UI style
