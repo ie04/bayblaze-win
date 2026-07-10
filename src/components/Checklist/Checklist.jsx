@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { CheckDot, HardButton, HardCard, HardInput } from './ui'
 
 // The 5-step mobile checklist. Only one step is expanded at a time.
@@ -344,6 +344,8 @@ function SignInBody({
 }
 
 function CodeBody({ referralCode, onCopyCode }) {
+  const { copied, copy } = useCopyFeedback(onCopyCode)
+
   return (
     <div className="space-y-3">
       <div className="border-2 border-black bg-black p-4 text-center">
@@ -354,14 +356,15 @@ function CodeBody({ referralCode, onCopyCode }) {
           {referralCode}
         </p>
       </div>
-      <HardButton variant="primary" className="w-full" onClick={onCopyCode}>
-        Copy code
+      <HardButton variant="primary" className="w-full" onClick={copy}>
+        {copied ? 'Copied!' : 'Copy code'}
       </HardButton>
     </div>
   )
 }
 
 function SendBody({ referralCode, referralUrl, onShareCode, onCopyCode }) {
+  const { copied, copy } = useCopyFeedback(onCopyCode)
   const text = `Use my BayBlaze code ${referralCode} for 20% off $20+`
   const encoded = encodeURIComponent(`${text} ${referralUrl}`)
   return (
@@ -396,13 +399,47 @@ function SendBody({ referralCode, referralUrl, onShareCode, onCopyCode }) {
       </div>
       <button
         type="button"
-        onClick={onCopyCode}
+        onClick={copy}
         className="w-full text-center text-xs font-bold uppercase tracking-widest text-[#585858] underline"
       >
-        Or copy code
+        {copied ? 'Copied!' : 'Or copy code'}
       </button>
     </div>
   )
+}
+
+function useCopyFeedback(onCopyCode) {
+  const [copied, setCopied] = useState(false)
+  const resetTimeoutRef = useRef(null)
+
+  useEffect(() => {
+    return () => {
+      if (resetTimeoutRef.current) {
+        window.clearTimeout(resetTimeoutRef.current)
+      }
+    }
+  }, [])
+
+  async function copy() {
+    const didCopy = await onCopyCode()
+
+    if (!didCopy) {
+      return
+    }
+
+    setCopied(true)
+
+    if (resetTimeoutRef.current) {
+      window.clearTimeout(resetTimeoutRef.current)
+    }
+
+    resetTimeoutRef.current = window.setTimeout(() => {
+      setCopied(false)
+      resetTimeoutRef.current = null
+    }, 1800)
+  }
+
+  return { copied, copy }
 }
 
 function WaitBody({ isQualified, statusBusy, onRefresh, demoMode, onDemoCompleteOrder }) {

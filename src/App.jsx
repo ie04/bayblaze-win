@@ -232,13 +232,10 @@ function App() {
 
   async function handleCopyCode() {
     if (!referralCode) return
+    const copied = await copyTextToClipboard(referralCode)
 
-    try {
-      await navigator.clipboard.writeText(referralCode)
-      setNotice('Code copied.')
-    } catch {
-      setNotice('Copy the code and send it to a friend.')
-    }
+    setNotice(copied ? 'Copied!' : 'Copy the code and send it to a friend.')
+    return copied
   }
 
   async function handleShareCode() {
@@ -257,8 +254,8 @@ function App() {
       }
     }
 
-    await navigator.clipboard.writeText(shareText)
-    setNotice('Share message copied.')
+    const copied = await copyTextToClipboard(shareText)
+    setNotice(copied ? 'Share message copied.' : 'Copy the code and send it to a friend.')
   }
 
   function handleSignOut() {
@@ -397,6 +394,36 @@ function isWinQualified(winState) {
 function readError(error) {
   if (error instanceof Error) return error.message
   return 'Something went wrong. Please try again.'
+}
+
+async function copyTextToClipboard(text) {
+  if (!text) return false
+
+  if (navigator.clipboard?.writeText) {
+    try {
+      await navigator.clipboard.writeText(text)
+      return true
+    } catch {
+      // Fall back to a selected textarea for browsers that block Clipboard API.
+    }
+  }
+
+  try {
+    const textarea = document.createElement('textarea')
+    textarea.value = text
+    textarea.setAttribute('readonly', '')
+    textarea.style.position = 'fixed'
+    textarea.style.left = '-9999px'
+    textarea.style.top = '0'
+    document.body.appendChild(textarea)
+    textarea.focus()
+    textarea.select()
+    const copied = document.execCommand('copy')
+    textarea.remove()
+    return copied
+  } catch {
+    return false
+  }
 }
 
 function normalizeFreebieProducts(response) {
