@@ -64,13 +64,16 @@ export default function FreebieSheet({
               <p className="mt-1 text-sm text-[#585858]">Try a different search.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-2 gap-3">
+            <div
+              className="freebie-carousel -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-3 pt-1"
+              aria-label="Eligible freebies"
+            >
               {visibleFreebies.map((product) => {
                 const selected = selectedFreebieId === product.id
                 return (
                   <label
                     key={product.id}
-                    className={`relative flex cursor-pointer flex-col border-2 border-black ${selected ? 'bg-[var(--bb-green)]' : 'bg-white'}`}
+                    className={`relative flex w-[44vw] min-w-[154px] max-w-[178px] snap-start cursor-pointer flex-col border-2 border-black ${selected ? 'bg-[var(--bb-green)]' : 'bg-white'}`}
                     style={{
                       boxShadow: selected ? '4px 4px 0 0 #000' : '2px 2px 0 0 #000',
                     }}
@@ -83,12 +86,12 @@ export default function FreebieSheet({
                       value={product.id}
                       onChange={() => onSelect(product.id)}
                     />
-                    <div className="aspect-square border-b-2 border-black bg-white">
+                    <div className="aspect-[1/0.86] border-b-2 border-black bg-white">
                       {product.image ? (
                         <img
                           src={product.image}
                           alt={product.name}
-                          className="h-full w-full object-contain p-3"
+                          className="h-full w-full object-contain p-2.5"
                         />
                       ) : (
                         <div className="grid h-full place-items-center text-xs font-black uppercase text-[#585858]">
@@ -96,20 +99,20 @@ export default function FreebieSheet({
                         </div>
                       )}
                     </div>
-                    <div className="p-3">
+                    <div className="flex min-h-[112px] flex-1 flex-col p-3">
                       <p className="text-[10px] font-extrabold uppercase tracking-widest text-[var(--bb-green-dark)]">
                         {product.brand}
                       </p>
                       <p className="mt-1 line-clamp-2 text-sm font-bold uppercase leading-tight text-black">
                         {product.name}
                       </p>
-                      <p className="mt-2 text-sm font-black text-black">
+                      <p className="mt-auto pt-2 text-sm font-black leading-none text-black">
                         {product.price || 'Freebie'}
                       </p>
                     </div>
                     {selected ? (
                       <span
-                        className="absolute right-2 top-2 grid h-7 w-7 place-items-center border-2 border-black bg-black text-white"
+                        className="absolute right-2 top-2 grid h-7 w-7 place-items-center border-2 border-black bg-black text-sm font-black text-white"
                         aria-hidden="true"
                       >
                         ✓
