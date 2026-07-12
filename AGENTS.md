@@ -9,7 +9,8 @@ The app should stay focused on the promotional reward UX:
 1. NFC campaign landing page.
 2. Customer sign in or account creation through `bayblaze-api`.
 3. Personal friend promo-code generation for 20% off $20+.
-4. Waiting state until the code is used on a completed order.
+4. Waiting state until the code is used by a new customer on that customer's
+   first completed order.
 5. Freebie claim handoff to the BayBlaze storefront.
 
 ## Source-of-record boundaries
@@ -19,6 +20,9 @@ The app should stay focused on the promotional reward UX:
 - Do not call Firebase, Firestore, Medusa, Twilio, or Google APIs directly from browser code.
 - Customer auth must go through `bayblaze-api` account routes.
 - Promo-code state, referral attribution, completed-order qualification, and freebie eligibility must be owned by `bayblaze-api`.
+- Freebie qualification requires the referred friend to use the code on their
+  first order. Existing customers may receive the discount if the API allows it,
+  but that use must not unlock the referrer's freebie.
 - Generated friend codes are shared discount-code records in
   `customer_discount_codes/{CODE}` with `category=win_referral`, created through
   the common `bayblaze-api` discount-code service. They appear in
