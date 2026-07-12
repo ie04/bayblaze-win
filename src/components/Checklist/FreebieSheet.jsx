@@ -64,16 +64,13 @@ export default function FreebieSheet({
               <p className="mt-1 text-sm text-[#585858]">Try a different search.</p>
             </div>
           ) : (
-            <div
-              className="freebie-carousel -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-3 pt-1"
-              aria-label="Eligible freebies"
-            >
+            <div className="grid grid-cols-2 gap-3 pb-3 sm:grid-cols-3">
               {visibleFreebies.map((product) => {
                 const selected = selectedFreebieId === product.id
                 return (
                   <label
                     key={product.id}
-                    className={`relative flex w-[44vw] min-w-[154px] max-w-[178px] snap-start cursor-pointer flex-col border-2 border-black ${selected ? 'bg-[var(--bb-green)]' : 'bg-white'}`}
+                    className={`relative flex min-w-0 cursor-pointer flex-col border-2 border-black ${selected ? 'bg-[var(--bb-green)]' : 'bg-white'}`}
                     style={{
                       boxShadow: selected ? '4px 4px 0 0 #000' : '2px 2px 0 0 #000',
                     }}
@@ -99,14 +96,14 @@ export default function FreebieSheet({
                         </div>
                       )}
                     </div>
-                    <div className="flex min-h-[112px] flex-1 flex-col p-3">
+                    <div className="flex min-h-[98px] flex-1 flex-col p-3">
                       <p className="text-[10px] font-extrabold uppercase tracking-widest text-[var(--bb-green-dark)]">
                         {product.brand}
                       </p>
-                      <p className="mt-1 line-clamp-2 text-sm font-bold uppercase leading-tight text-black">
+                      <p className="mt-1 line-clamp-2 text-[13px] font-bold uppercase leading-tight text-black">
                         {product.name}
                       </p>
-                      <p className="mt-auto pt-2 text-sm font-black leading-none text-black">
+                      <p className="mt-auto pt-2 text-[13px] font-black leading-none text-black">
                         {product.price || 'Freebie'}
                       </p>
                     </div>

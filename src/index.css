@@ -198,23 +198,6 @@ input:focus-visible {
   color: #000000;
 }
 
-.freebie-carousel {
-  scrollbar-color: #000000 transparent;
-  scrollbar-width: thin;
-}
-
-.freebie-carousel::-webkit-scrollbar {
-  height: 8px;
-}
-
-.freebie-carousel::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.freebie-carousel::-webkit-scrollbar-thumb {
-  background: #000000;
-}
-
 @media (max-width: 544px) {
   html {
     font-size: 96.9%;
