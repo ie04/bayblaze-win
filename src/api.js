@@ -178,14 +178,12 @@ export async function claimFreebie(accountToken, input) {
   })
 }
 
-export function buildStorefrontFreebieUrl({ claimToken, productId, variantId }) {
+export function buildStorefrontFreebieUrl({ claimToken } = {}) {
   const params = new URLSearchParams({
     freebie_picker: '1',
   })
 
   if (claimToken) params.set('win_claim', claimToken)
-  if (productId) params.set('product_id', productId)
-  if (variantId) params.set('variant_id', variantId)
 
   return `${config.storefrontUrl}/shop?${params.toString()}`
 }

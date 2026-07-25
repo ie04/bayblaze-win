@@ -1,14 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
 import {
   buildStorefrontFreebieUrl,
-  claimFreebie,
   clearSession,
   completeDemoFriendOrder,
   completeGoogleSignIn,
   config,
   createCustomerAccount,
   getCurrentAccount,
-  getFreebieProducts,
   getNfcContext,
   getStoredSession,
   getWinStatus,
@@ -18,7 +16,6 @@ import {
   startWinCampaign,
 } from './api'
 import Checklist from './components/Checklist/Checklist'
-import FreebieSheet from './components/Checklist/FreebieSheet'
 
 // NOTE: All auth, reward, and API logic below is unchanged from the original
 // BayBlaze Win App. Only the returned UI has been replaced with the mobile
@@ -47,16 +44,12 @@ function App() {
   const [session, setSession] = useState(() => getStoredSession())
   const [account, setAccount] = useState(null)
   const [winState, setWinState] = useState(null)
-  const [freebies, setFreebies] = useState([])
-  const [selectedFreebieId, setSelectedFreebieId] = useState('')
-  const [freebieSearch, setFreebieSearch] = useState('')
   const [isBooting, setIsBooting] = useState(true)
   const [authBusy, setAuthBusy] = useState(false)
   const [statusBusy, setStatusBusy] = useState(false)
   const [claimBusy, setClaimBusy] = useState(false)
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
-  const [showFreebiePicker, setShowFreebiePicker] = useState(false)
 
   const nfcContext = useMemo(() => getNfcContext(), [])
   const isQualified = isWinQualified(winState)
@@ -132,12 +125,11 @@ function App() {
     if (!session?.accountToken || !isQualified) return
 
     const timeout = window.setTimeout(() => {
-      setShowFreebiePicker(true)
-      loadFreebies(session.accountToken)
+      redirectToStorefrontFreebiePicker()
     }, 0)
 
     return () => window.clearTimeout(timeout)
-  }, [isQualified, session?.accountToken])
+  }, [isQualified, session?.accountToken, winState?.claimToken])
 
   async function beginWinFlow(activeSession, accountPayload) {
     const started = await startWinCampaign(activeSession.accountToken, nfcContext)
@@ -219,17 +211,6 @@ function App() {
     }
   }
 
-  async function loadFreebies(accountToken) {
-    try {
-      const response = await getFreebieProducts(accountToken)
-      const products = normalizeFreebieProducts(response)
-      setFreebies(products)
-      setSelectedFreebieId((current) => current || products[0]?.id || '')
-    } catch (freebieError) {
-      setError(readError(freebieError))
-    }
-  }
-
   async function handleCopyCode() {
     if (!referralCode) return
     const copied = await copyTextToClipboard(referralCode)
@@ -263,9 +244,6 @@ function App() {
     setSession(null)
     setAccount(null)
     setWinState(null)
-    setFreebies([])
-    setSelectedFreebieId('')
-    setShowFreebiePicker(false)
     setNotice('Signed out.')
   }
 
@@ -275,51 +253,16 @@ function App() {
     setNotice('Freebie unlocked.')
   }
 
-  async function handleClaimFreebie(event) {
-    event.preventDefault()
-
-    const selectedProduct = freebies.find((product) => product.id === selectedFreebieId)
-
-    if (!selectedProduct) {
-      setError('Select a freebie before continuing.')
-      return
-    }
-
+  function redirectToStorefrontFreebiePicker() {
     setClaimBusy(true)
     setError('')
 
-    try {
-      const claim = await claimFreebie(session.accountToken, {
-        campaign: nfcContext.campaign,
+    window.location.assign(
+      buildStorefrontFreebieUrl({
         claimToken: winState?.claimToken,
-        productId: selectedProduct.id,
-        variantId: selectedProduct.variantId,
-      })
-
-      window.location.assign(
-        buildStorefrontFreebieUrl({
-          claimToken: claim.claimToken || winState?.claimToken,
-          productId: selectedProduct.id,
-          variantId: selectedProduct.variantId,
-        }),
-      )
-    } catch (claimError) {
-      setError(readError(claimError))
-    } finally {
-      setClaimBusy(false)
-    }
-  }
-
-  const visibleFreebies = useMemo(() => {
-    const normalizedSearch = freebieSearch.trim().toLowerCase()
-    if (!normalizedSearch) return freebies
-    return freebies.filter((product) =>
-      [product.name, product.brand, product.description, ...(product.categories || [])]
-        .join(' ')
-        .toLowerCase()
-        .includes(normalizedSearch),
+      }),
     )
-  }, [freebieSearch, freebies])
+  }
 
   return (
     <>
@@ -343,24 +286,9 @@ function App() {
         onCopyCode={handleCopyCode}
         onShareCode={handleShareCode}
         onRefresh={refreshWinStatus}
-        onOpenFreebie={() => setShowFreebiePicker(true)}
+        onOpenFreebie={redirectToStorefrontFreebiePicker}
         onSignOut={handleSignOut}
       />
-
-      {showFreebiePicker && isQualified ? (
-        <FreebieSheet
-          claimBusy={claimBusy}
-          error={error}
-          freebies={freebies}
-          freebieSearch={freebieSearch}
-          onClose={() => setShowFreebiePicker(false)}
-          onSearchChange={setFreebieSearch}
-          onSubmit={handleClaimFreebie}
-          onSelect={setSelectedFreebieId}
-          selectedFreebieId={selectedFreebieId}
-          visibleFreebies={visibleFreebies}
-        />
-      ) : null}
 
       <Toast error={error} notice={notice} />
     </>
@@ -424,65 +352,6 @@ async function copyTextToClipboard(text) {
   } catch {
     return false
   }
-}
-
-function normalizeFreebieProducts(response) {
-  const products = Array.isArray(response?.products) ? response.products : []
-
-  return products
-    .map((product) => {
-      const firstVariant = Array.isArray(product.variants) ? product.variants[0] : null
-      const image = readProductImage(product, firstVariant)
-      const id = product.id || product.productId || firstVariant?.productId
-      const variantId = product.variantId || firstVariant?.id
-
-      if (!id) return null
-
-      return {
-        id,
-        variantId,
-        name:
-          product.name || product.title || firstVariant?.productTitle || 'BayBlaze product',
-        brand:
-          product.brand ||
-          product.metadata?.brand ||
-          firstVariant?.metadata?.brand ||
-          'BayBlaze',
-        image,
-        price: product.price || product.salePrice || formatPrice(firstVariant?.priceCents),
-        categories:
-          product.categories ||
-          [product.category || product.collectionTitle || 'Vapes'].filter(Boolean),
-        description:
-          product.description || 'BayBlaze freebie eligible for local Tampa delivery.',
-      }
-    })
-    .filter(Boolean)
-}
-
-function readProductImage(product, variant) {
-  const candidates = [
-    product.image,
-    product.thumbnail,
-    product.imageUrl,
-    product.imageUrls?.[0],
-    product.images?.[0]?.src,
-    product.images?.[0]?.url,
-    typeof product.images?.[0] === 'string' ? product.images[0] : '',
-    variant?.imageUrl,
-    variant?.imageUrls?.[0],
-  ]
-
-  return candidates.find((item) => typeof item === 'string' && item.trim()) || ''
-}
-
-function formatPrice(cents) {
-  if (!Number.isFinite(cents)) return ''
-
-  return new Intl.NumberFormat('en-US', {
-    currency: 'USD',
-    style: 'currency',
-  }).format(cents / 100)
 }
 
 export default App

@@ -13,6 +13,12 @@ The app should stay focused on the promotional reward UX:
    first completed order.
 5. Freebie claim handoff to the BayBlaze storefront.
 
+Win does not own the freebie product picker. Once a reward is qualified, redirect
+to the storefront with `freebie_picker=1` and `win_claim={claimToken}` only; the
+storefront is responsible for product selection, cart application, checkout
+metadata, inventory reservation, and recording the consumed freebie after order
+creation.
+
 ## Source-of-record boundaries
 
 - Do not make this repo a commerce database.

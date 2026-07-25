@@ -154,10 +154,10 @@ export default function Checklist({
           {isQualified ? (
             <div className="space-y-3">
               <p className="text-sm font-medium text-[#585858]">
-                Choose a product and continue to checkout.
+                Continue to BayBlaze to pick your freebie and check out.
               </p>
               <HardButton variant="primary" className="w-full" onClick={onOpenFreebie}>
-                Open freebie picker
+                Continue to BayBlaze
               </HardButton>
             </div>
           ) : (
