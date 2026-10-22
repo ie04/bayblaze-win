@@ -87,3 +87,13 @@ These routes should require a BayBlaze customer account session bearer token.
   matching `/auth/google/callback` URLs must also exist in Google Cloud OAuth
   settings if testing the full Google redirect locally.
 - Configure SPA rewrites so `/auth/google/callback` serves `index.html`.
+
+## October 2026 Frontend Configuration Refresh
+
+- Production and preview Vercel backend configuration was refreshed after the
+  OVHcloud migration. `VITE_BAYBLAZE_API_URL=https://api.bayblaze.net`. The browser authenticates
+  with BayBlaze account sessions; do not add the shared backend service token
+  to this Vite app.
+- Redeploy after Vercel environment changes. Service-token synchronization and
+  browser session recovery are separate concerns; old account sessions may
+  require a fresh sign-in after the backend signing secret changes.
