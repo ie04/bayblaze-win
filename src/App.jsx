@@ -174,7 +174,8 @@ function App() {
   async function handleDemoSignIn() {
     const demoSession = saveSession({
       account: {
-        badges: ['customer'],
+        disabled: false,
+        roles: [],
         displayName: 'BayBlaze Demo Customer',
         email: 'demo@bayblaze.net',
         uid: 'demo-customer',
@@ -188,7 +189,8 @@ function App() {
     })
 
     await beginWinFlow(demoSession, {
-      badges: ['customer'],
+      disabled: false,
+      roles: [],
       displayName: 'BayBlaze Demo Customer',
       email: 'demo@bayblaze.net',
       uid: 'demo-customer',
